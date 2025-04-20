@@ -1,0 +1,117 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #181818;
+}
+
+
+
+
+
+
+
+body {
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 80px; /* Más alto para iconos grandes */
+  background: #23272f;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 2px 8px #0002;
+  padding: 0 32px;
+  gap: 20px;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2.4rem; /* Aumentado para iconos más grandes */
+  margin-right: 16px;
+  cursor: pointer;
+  padding: 14px 14px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.icon-btn:hover, .tool-btn.selected {
+  background: #2e3340;
+}
+.tool-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.slider {
+  accent-color: #5c9eff;
+  width: 120px;
+}
+.canvas-container {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+#stamp-choices button {
+  font-size: 1.1rem !important;
+  padding: 2px 3px !important;
+  margin: 0 !important;
+  min-width: 10px;
+  min-height: 10px;
+}
+#canvas {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px #0004;
+  border: 2px solid #e0e0e0;
+  max-width: 98vw;
+  max-height: 80vh;
+  display: block;
+}
+.palette-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 60px;
+  background: #23272f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  box-shadow: 0 -2px 8px #0002;
+  gap: 18px;
+}
+.palette-color {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin: 0 4px;
+  cursor: pointer;
+  border: 2px solid #fff0;
+  transition: border 0.2s;
+}
+.palette-color.selected {
+  border: 2px solid #fff;
+}
+@media (max-width: 900px) {
+  #canvas {
+    max-width: 100vw;
+    max-height: 60vh;
+  }
+  .top-bar, .palette-bar {
+    padding: 0 6px;
+  }
+}
