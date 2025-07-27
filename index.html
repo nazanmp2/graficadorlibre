@@ -3,737 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Canvas App</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body style="background: linear-gradient(135deg, #fff700 0%, #ff9800 50%, #ff2d2d 100%);">
-  <div class="top-bar" style="height:2.8cm; display:flex; align-items:center;">
-    <button class="icon-btn" id="web-images-btn" title="Elegir imagen de la web">🌐</button>
-    <button class="icon-btn" id="upload-btn" title="Subir imagen">📤</button>
-    <input type="file" id="upload-input" accept="image/*" style="display:none">
-    <button class="icon-btn" id="save" title="Guardar imagen">💾</button>
-    <button class="icon-btn" id="clear" title="Borrador total">🧹</button>
-    <button class="icon-btn" id="undo" title="Deshacer">↩️</button>
-    <button class="icon-btn" id="redo" title="Rehacer">↪️</button>
-    <div class="tool-controls">
-      <button class="icon-btn tool-btn selected" id="pencil" title="Lápiz">✏️</button>
-      <button class="icon-btn tool-btn" id="fibra" title="Fibra">🖌️</button>
-      <button class="icon-btn tool-btn" id="eraser" title="Goma" style="padding:0;">
-  <svg width="48" height="48" viewBox="0 0 48 48" style="display:block;margin:auto;max-width:48px;max-height:48px;" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g transform="rotate(-25 24 24)">
-      <!-- Sombra 3D -->
-      <rect x="10" y="28" width="22" height="7" rx="2.5" fill="#b0bec5" opacity="0.55"/>
-      <!-- Parte blanca de la goma -->
-      <rect x="10" y="14" width="22" height="14" rx="3.5" fill="#fff" stroke="#1e88e5" stroke-width="2.5"/>
-      <!-- Parte azul de la goma -->
-      <rect x="10" y="7" width="22" height="10" rx="3.5" fill="#2196f3" stroke="#1565c0" stroke-width="2.5"/>
-      <!-- Detalle de separación -->
-      <rect x="10" y="17" width="22" height="2.5" rx="1.2" fill="#1565c0"/>
-      <!-- Sombra lateral para efecto 3D -->
-      <polygon points="32,7 32,28 36,32 36,12" fill="#90a4ae" opacity="0.6"/>
-      <polygon points="10,7 10,28 6,32 6,12" fill="#90a4ae" opacity="0.4"/>
-    </g>
-  </svg>
-</button>
-      <button class="icon-btn tool-btn" id="fill" title="Bote de pintura" style="padding:0;">
-  <svg width="48" height="48" viewBox="0 0 48 60" style="display:block;margin:auto;max-width:48px;max-height:48px;" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Manija más notoria -->
-    <path d="M10 17 Q24 0 38 17" stroke="#bbb" stroke-width="2" fill="none"/>
-    <!-- Boca ovalada -->
-    <ellipse cx="24" cy="18" rx="14" ry="7" fill="#fff" stroke="#bbb" stroke-width="2"/>
-    <!-- Pintura roja adentro -->
-    <ellipse cx="24" cy="18" rx="11" ry="5" fill="#e53935" stroke="#e53935" stroke-width="1.2"/>
-    <!-- Cuerpo tipo balde (trapecio) -->
-    <path d="M12 22 Q24 55 36 22" fill="#fff" stroke="#bbb" stroke-width="2"/>
-    <path d="M12 22 Q24 55 36 22 Q24 25 12 22 Z" fill="#fff" stroke="#bbb" stroke-width="2"/>
-    <!-- Base curva -->
-    <ellipse cx="24" cy="54" rx="12" ry="4" fill="#fff" stroke="#bbb" stroke-width="2"/>
-  </svg>
-</button>
-
-      <span style="display:inline-flex; align-items:center; gap:2px; background:#23272f; border:2px solid #5c9eff; border-radius:10px; padding:4px 8px;">
-  <button class="icon-btn tool-btn" id="stamp" title="Sellito">⭐</button>
-  <button class="icon-btn" id="open-stamp-modal" title="Elegir otro sello" style="font-size:2rem; padding:0 7px;">&#x25BE;</button>
-</span>
-      <!-- Modal de selección de sello -->
-      <div id="stamp-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0007; z-index:300; align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:16px; padding:24px; min-width:260px; box-shadow:0 8px 32px #0006; display:flex; flex-direction:column; align-items:center;">
-          <div style="font-size:1.1rem; margin-bottom:12px;">Elige un sello:</div>
-          <div id="stamp-choices" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:12px;">
-            <!-- Sellos se agregan por JS -->
-          </div>
-          <button id="close-stamp-modal" style="margin-top:8px; padding:6px 18px; border-radius:6px; border:none; background:#bbb; color:#222; font-weight:bold; cursor:pointer;">Cerrar</button>
-        </div>
-      </div>
-      <button class="icon-btn tool-btn" id="text" title="Texto">🅰️</button>
-      <label style="display:inline-flex; align-items:center; gap:6px; font-weight:bold;">
-  <span style="font-size:1rem; color:#5c9eff;">TAMAÑO</span>
-  <input class="slider" id="thickness" type="range" min="1" max="32" value="2" title="Grosor" />
-</label>
-    </div>
-  </div>
-  <!-- Modal para elegir imagen de la web -->
-  <div id="web-images-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000a; z-index:200; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:16px; padding:24px; max-width:90vw; max-height:90vh; overflow:auto; box-shadow:0 8px 32px #0006; position:relative;">
-      <button id="close-web-images-modal" style="position:absolute; top:8px; right:12px; font-size:1.5rem; background:none; border:none; cursor:pointer;">✖️</button>
-      <h2>Descarga la imagen y subila para poder pintarla</h2>
-      <div style="margin: 12px 0 18px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center;">
-        <button id="mundoprimaria-btn" style="padding:7px 18px; border-radius:6px; border:none; background:#ffb400; color:#fff; font-weight:bold; cursor:pointer;">Buscar en Mundo Primaria</button>
-      </div>
-      <div style="font-size:0.96rem; color:#333; text-align:center; margin-bottom:10px;">
-        ¿Quieres imágenes para colorear? Haz clic en <b>Buscar en Mundo Primaria</b>, descarga la imagen que te guste y súbela aquí con el botón <b>📤</b> de la barra superior.
-      </div>
-      <div id="web-images-list" style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-top:16px;"></div>
-    </div>
-  </div>
-
-<div class="responsive-wrapper">
-  <canvas id="canvas" width="1280" height="720"></canvas>
-</div>
-
-  <div class="palette-bar" id="palette" style="height:4cm; display:flex; align-items:center; flex-wrap:wrap; row-gap:10px; justify-content:center;">
-    <!-- Colores generados por JS -->
-  </div>
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-
-    // --- Imágenes de la web para colorear ---
-    const webImages = [];
-
-    const webImagesBtn = document.getElementById('web-images-btn');
-    const webImagesModal = document.getElementById('web-images-modal');
-    const webImagesList = document.getElementById('web-images-list');
-    const closeWebImagesModal = document.getElementById('close-web-images-modal');
-    webImagesBtn.onclick = () => {
-      webImagesList.innerHTML = '';
-      let loadedCount = 0;
-      let errorCount = 0;
-      webImages.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.style.width = '120px';
-        img.style.height = '120px';
-        img.style.objectFit = 'contain';
-        img.style.border = '2px solid #8884';
-        img.style.borderRadius = '8px';
-        img.style.cursor = 'pointer';
-        img.title = 'Seleccionar';
-        img.onload = () => {
-          loadedCount++;
-        };
-        img.onerror = () => {
-          errorCount++;
-          img.style.display = 'none';
-          if (errorCount === webImages.length) {
-            webImagesList.innerHTML = '<p style="color:#a00">No se pudieron cargar imágenes. Intenta más tarde o revisa tu conexión.</p>';
-          }
-        };
-        img.onclick = () => {
-          loadImageToCanvas(url);
-          webImagesModal.style.display = 'none';
-        };
-        webImagesList.appendChild(img);
-      });
-      webImagesModal.style.display = 'flex';
-    };
-    closeWebImagesModal.onclick = () => {
-      webImagesModal.style.display = 'none';
-    };
-    function loadImageToCanvas(url) {
-      const img = new window.Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        // Centrar y ajustar la imagen al canvas
-        const imgAspect = img.width / img.height;
-        const canvasAspect = canvas.width / canvas.height;
-        let drawWidth, drawHeight, offsetX, offsetY;
-        if (imgAspect > canvasAspect) {
-          drawWidth = canvas.width;
-          drawHeight = canvas.width / imgAspect;
-          offsetX = 0;
-          offsetY = (canvas.height - drawHeight) / 2;
-        } else {
-          drawHeight = canvas.height;
-          drawWidth = canvas.height * imgAspect;
-          offsetX = (canvas.width - drawWidth) / 2;
-          offsetY = 0;
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-        // Rellenar píxeles totalmente transparentes de blanco
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imgData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          if (data[i+3] === 0) {
-            data[i] = 255;
-            data[i+1] = 255;
-            data[i+2] = 255;
-            data[i+3] = 255;
-          }
-        }
-        ctx.putImageData(imgData, 0, 0);
-        pushToHistory && pushToHistory();
-      };
-      img.src = url;
+  <title>Canvas Responsivo</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #333;
     }
 
-    // --- Botón para abrir búsqueda en Mundo Primaria ---
-    document.getElementById('mundoprimaria-btn').onclick = () => {
-      window.open('https://www.mundoprimaria.com/dibujos-para-colorear', '_blank');
-    };
+    .responsive-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      width: 1280px;
+      height: 720px;
+    }
 
+    canvas {
+      display: block;
+      background-color: white;
+      border: 2px solid #999;
+    }
+  </style>
+</head>
+<body>
 
+  <div class="responsive-wrapper">
+    <canvas id="canvas" width="1280" height="720"></canvas>
+  </div>
 
-
-    // --- Configuración ---
-    const COLORS = [
-      // Tonos de piel (muy claro a oscuro)
-      '#fff3e0', '#ffd1c1', '#ffc09f', '#f6b48f', '#e29a7a', '#b97a56', '#8d5a3a', '#5a3a1a',
-      // Básicos y grises
-      '#000000', '#222222', '#444444', '#888888', '#cccccc', '#ffffff',
-      // Rojos y naranjas
-      '#ffebee', '#ffcdd2', '#ff8a80', '#ff3b30', '#ff5252', '#ff5e00', '#fcff00', '#ff5e00',
-      // Amarillos y verdes
-      '#fffde7', '#fff700', '#fff176', '#d4e157', '#4cd964', '#43a047', '#16a085', '#b2ff59',
-      // Azules
-      '#e3f2fd', '#b3e5fc', '#5ac8fa', '#00f6ff', '#00f6ff', '#5856d6', '#2980b9', '#1565c0',
-      // Violetas y rosas
-      '#f3e5f5', '#e1bee7', '#ce93d8', '#ba68c8', '#9c27b0', '#ff2d55', '#c0392b', '#ad1457',
-      // Pasteles extra
-      '#ffe0b2', '#fff9c4', '#c8e6c9', '#b2dfdb', '#b3e5fc', '#d1c4e9', '#f8bbd0', '#f9fbe7',
-      // Nuevos colores
-      '#003366', /* azul marino */
-      '#39ff14', /* verde fluor */
-      '#8d5524', /* marrón */
-      '#aeefff', /* celeste pastel */
-      '#ff1493', /* rosa fuerte */
-      '#e0e0e0', /* gris claro */
-      '#ffd700', /* dorado */
-      '#c0c0c0', /* plateado */
-    ];
-    const TOOL = { PENCIL: 'pencil', FIBRA: 'fibra', ERASER: 'eraser', FILL: 'fill', TEXT: 'text', STAMP: 'stamp' };
-
-    let tool = TOOL.PENCIL;
-    let textToolText = '';
-    let color = COLORS[0];
-    let lineWidth = 2;
-    let drawing = false;
-    let lastX = 0, lastY = 0;
-    let history = [];
-    let historyStep = 0;
-    let redoStack = [];
-    const TOLERANCE = 32; // Tolerancia óptima fija para flood fill
+  <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    const wrapper = document.querySelector('.responsive-wrapper');
 
-    // --- Paleta de colores ---
-    const palette = document.getElementById('palette');
-    COLORS.forEach(c => {
-      const d = document.createElement('div');
-      d.className = 'palette-color' + (c === color ? ' selected' : '');
-      d.style.background = c;
-      d.setAttribute('tabindex', 0);
-      d.setAttribute('aria-label', `Color ${c}`);
-      d.onclick = () => {
-        color = c;
-        document.querySelectorAll('.palette-color').forEach(e => e.classList.remove('selected'));
-        d.classList.add('selected');
-      };
-      palette.appendChild(d);
-    });
+    let isDrawing = false;
+    let scale = 1; // guardamos el valor actual de escala
 
-
-
-    // --- Sello: selección múltiple ---
-    let currentStamp = '⭐';
-    const stampBtn = document.getElementById('stamp');
-    const openStampModalBtn = document.getElementById('open-stamp-modal');
-    const stampModal = document.getElementById('stamp-modal');
-    const stampChoices = document.getElementById('stamp-choices');
-    const closeStampModal = document.getElementById('close-stamp-modal');
-    const STAMP_LIST = [
-      '⭐','🌞','🌙','☁️','🦋','❤️','🐾','🍀','⚽','🎈',
-      '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯',
-      '🦁','🐮','🐷','🐸','🐵','🐔','🐧','🐦','🐤','🦆',
-      '🦅','🦉','🦇','🐺','🦄','🐝','🐛','🦋','🐌','🐞',
-      '🐢','🐍','🦎','🦂','🦀','🐙','🦑','🦐','🐠','🐟',
-      '🐬','🐳','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🐘',
-      '🦛','🦏','🐪','🐫','🦒','🦘','🦥','🦦','🦨','🦡',
-      '🐾','🦃','🦚','🦜','🦢','🦩','🕊️','🐇','🐿️','🦔',
-      
-      '🍔','🍟','🍕','🌭','🥪','🥞','🍩','🍪','🍫','🍬',
-      '🎂','🍰','🧁','🍦','🍧','🍨','🍿','🥤','🧃','🥛',
-      '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚚',
-      '🚜','🚲','🛴','🛹','🛵','🏍️','🚂','✈️','🚀','🛸',
-      '⚽','🏀','🏈','⚾','🏐','🏉','🎱','🏓','🏸',
-      '🏒','🏑','🏏','🥅','⛳','🏹','🎣','🤿','🥊','🥋',
-      '🎽','🛷','⛸️','🥌','🛶','🏄‍♂️','🏊‍♀️','🤸‍♂️','⛹️‍♀️','🤾‍♂️',
-      '🏆','🎖️','🏅','🥇','🥈','🥉','🎗️','🎟️','🎯',
-      '🎳','🎮','🧸','🪁','🪀',
-      '🌈','☀️','⛅','🌧️','⛈️','🌩️','🌨️','❄️','☃️','⛄',
-      '🌊','🔥','💧','🌱','🌳','🌵','🌴','🌺','🌸','🌻',
-      '🌼','💐','🍀','🌹','🥀','🌷','🌾','🌿','🍂','🍁',
-      '🦋','🐝','🐞','🐌','🐛','🦗','🕷️','🦂','🐢','🐍',
-      '🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠',
-      '🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍',
-      '🦧','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦥','🦦',
-      '🦨','🦡','🐾','🦃','🦚','🦜','🦢','🦩','🕊️','🐇',
-      '🐿️','🦔','🦦','🦨','🦡','🐾','🦃','🦚','🦜','🦢'
-    ];
-    // Rellena el modal con los sellos
-    stampChoices.innerHTML = '';
-    STAMP_LIST.filter(e => e && typeof e === 'string' && e.trim().length > 0).forEach(emoji => {
-      const btn = document.createElement('button');
-      btn.textContent = emoji;
-      btn.className = 'icon-btn';
-      btn.style.fontSize = '2rem';
-      btn.style.margin = '0.5px';
-      btn.style.background = '#f7f7f7';
-      btn.style.border = '2px solid #ddd';
-      btn.style.borderRadius = '8px';
-      btn.style.cursor = 'pointer';
-      btn.onclick = () => {
-        currentStamp = emoji;
-        stampBtn.innerHTML = emoji;
-        tool = TOOL.STAMP;
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
-        stampBtn.classList.add('selected');
-        stampModal.style.display = 'none';
-      };
-      stampChoices.appendChild(btn);
-    });
-    // El botón principal selecciona la herramienta sello con el sello actual
-    stampBtn.onclick = function() {
-      tool = TOOL.STAMP;
-      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
-      stampBtn.classList.add('selected');
-    };
-    // El botón de flecha abre el modal
-    openStampModalBtn.onclick = function(e) {
-      stampModal.style.display = 'flex';
-      e.stopPropagation();
-    };
-    closeStampModal.onclick = function() {
-      stampModal.style.display = 'none';
-    };
-
-
-    // --- Herramientas ---
-    function selectTool(t) {
-      tool = t;
-      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
-      if (t === TOOL.STAMP) {
-        document.getElementById('stamp').classList.add('selected');
-      } else {
-        document.getElementById(t).classList.add('selected');
-      }
-      // Si es herramienta texto, pedir el texto
-      if (t === TOOL.TEXT) {
-        let txt = prompt('Introduce el texto que quieres usar:');
-        if (txt && txt.trim() !== '') {
-          textToolText = txt;
-        } else {
-          // Si no se ingresa texto, volver al lápiz
-          selectTool(TOOL.PENCIL);
-        }
-      }
+    function scaleCanvasToFitScreen() {
+      const scaleX = window.innerWidth / 1280;
+      const scaleY = window.innerHeight / 720;
+      scale = Math.min(scaleX, scaleY);
+      wrapper.style.transform = `scale(${scale})`;
     }
-    document.getElementById('pencil').onclick = () => selectTool(TOOL.PENCIL);
-    document.getElementById('fibra').onclick = () => selectTool(TOOL.FIBRA);
-    document.getElementById('eraser').onclick = () => selectTool(TOOL.ERASER);
-    document.getElementById('fill').onclick = () => selectTool(TOOL.FILL);
-    document.getElementById('stamp').onclick = () => selectTool(TOOL.STAMP);
-document.getElementById('text').onclick = () => selectTool(TOOL.TEXT);
 
-    // --- Sliders ---
-    document.getElementById('thickness').oninput = e => lineWidth = +e.target.value;
+    window.addEventListener('resize', scaleCanvasToFitScreen);
+    scaleCanvasToFitScreen();
 
-    // --- Historial ---
-    function pushToHistory() {
-      if (history.length > 30) history = history.slice(-30);
-      history = history.slice(0, historyStep);
-      history.push(canvas.toDataURL());
-      historyStep = history.length;
-      redoStack = []; // Al hacer una nueva acción, vacía el redoStack
-      updateUndoRedo();
-    }
-    document.getElementById('undo').onclick = () => {
-      if (historyStep > 1) {
-        redoStack.push(history[historyStep - 1]); // Guarda el estado eliminado
-        historyStep--;
-        const img = new window.Image();
-        img.src = history[historyStep - 1];
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0);
-        };
-        updateUndoRedo();
-      }
-    };
-
-    // --- Rehacer ---
-    document.getElementById('redo').onclick = () => {
-      if (redoStack.length > 0) {
-        const redoState = redoStack.pop();
-        if (historyStep < history.length) {
-          history[historyStep] = redoState;
-        } else {
-          history.push(redoState);
-        }
-        historyStep++;
-        const img = new window.Image();
-        img.src = history[historyStep - 1];
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0);
-        };
-        updateUndoRedo();
-      }
-    };
-
-    // --- Borrador total ---
-    document.getElementById('clear').onclick = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      updateUndoRedo();
-    };
-
-    // --- Actualizar botones Undo/Redo ---
-    function updateUndoRedo() {
-      document.getElementById('undo').disabled = historyStep <= 1;
-      document.getElementById('redo').disabled = redoStack.length === 0;
-    }
-    updateUndoRedo();
-
-    // --- Guardar imagen ---
-    document.getElementById('save').onclick = () => {
-      const url = canvas.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'canvas.png';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    };
-
-    // --- Subir imagen ---
-    (function() {
-      const uploadBtn = document.getElementById('upload-btn');
-      const uploadInput = document.getElementById('upload-input');
-      uploadBtn.addEventListener('click', () => {
-        uploadInput.value = '';
-        uploadInput.click();
-      });
-      uploadInput.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const img = new window.Image();
-          img.onload = () => {
-            // Calcular escala y posición para centrar y ajustar la imagen sin deformar
-            const imgAspect = img.width / img.height;
-            const canvasAspect = canvas.width / canvas.height;
-            let drawWidth, drawHeight, offsetX, offsetY;
-            if (imgAspect > canvasAspect) {
-              drawWidth = canvas.width;
-              drawHeight = canvas.width / imgAspect;
-              offsetX = 0;
-              offsetY = (canvas.height - drawHeight) / 2;
-            } else {
-              drawHeight = canvas.height;
-              drawWidth = canvas.height * imgAspect;
-              offsetX = (canvas.width - drawWidth) / 2;
-              offsetY = 0;
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-            // Rellenar píxeles totalmente transparentes de blanco
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-              if (data[i+3] === 0) {
-                data[i] = 255;
-                data[i+1] = 255;
-                data[i+2] = 255;
-                data[i+3] = 255;
-              }
-            }
-            ctx.putImageData(imgData, 0, 0);
-      
-          };
-          img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-        e.target.value = '';
-      });
-    })();
-
-
-
-    // --- Dibujo y goma ---
-    function getPointerPos(e) {
+    // Ajustar coordenadas del mouse según el escalado
+    function getScaledMousePos(evt) {
       const rect = canvas.getBoundingClientRect();
       return {
-        x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
-        y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+        x: (evt.clientX - rect.left) / scale,
+        y: (evt.clientY - rect.top) / scale
       };
-      const pos = getPointerPos(e);
-      // Dibuja el sello seleccionado (estrella o sol)
-      lastX = pos.x;
-      lastY = pos.y;
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      if (tool === TOOL.ERASER) {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = lineWidth * 2.5;
-      } else {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = color;
-        ctx.lineWidth = tool === TOOL.FIBRA ? Math.max(lineWidth * 2, 6) : lineWidth;
-      }
-    };
-    canvas.onpointerdown = e => {
-      if (tool === TOOL.FILL) return;
-      if (tool === TOOL.STAMP) {
-        const pos = getPointerPos(e);
-        ctx.save();
-        ctx.font = `${Math.max(48, lineWidth * 10)}px Segoe UI Emoji, Arial, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillText(currentStamp, pos.x, pos.y);
-        ctx.restore();
-        pushToHistory();
-        return;
-      }
-      drawing = true;
-      const pos = getPointerPos(e);
-      lastX = pos.x;
-      lastY = pos.y;
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      if (tool === TOOL.ERASER) {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = lineWidth * 2.5;
-      } else {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = color;
-        ctx.lineWidth = tool === TOOL.FIBRA ? Math.max(lineWidth * 2, 6) : lineWidth;
-      }
-    };
-    canvas.onpointermove = e => {
-      if (!drawing || tool === TOOL.FILL) return;
-      const pos = getPointerPos(e);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      const pos = getScaledMousePos(e);
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
-    };
-    canvas.onpointerup = canvas.onpointerleave = () => {
-      if (!drawing) return;
-      drawing = false;
-      ctx.closePath();
-      ctx.globalCompositeOperation = 'source-over';
-      pushToHistory(); // Ahora solo guardamos el historial al finalizar el trazo
-    };
-
-    // --- Bote de pintura (flood fill) ---
-    function hexToRgba(hex) {
-      const h = hex.replace('#','');
-      return [
-        parseInt(h.substring(0,2),16),
-        parseInt(h.substring(2,4),16),
-        parseInt(h.substring(4,6),16),
-        255
-      ];
-    }
-    function colorDistance(a, b) {
-      return Math.sqrt(
-        Math.pow(a[0] - b[0], 2) +
-        Math.pow(a[1] - b[1], 2) +
-        Math.pow(a[2] - b[2], 2)
-      );
-    }
-    function isSimilarColor(a, b, tolerance = 18) {
-      return colorDistance(a, b) <= tolerance;
-    }
-    function floodFill(x, y, fillColor) {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      const width = imgData.width;
-      const height = imgData.height;
-      const startIdx = (Math.floor(y) * width + Math.floor(x)) * 4;
-      const targetColor = [data[startIdx], data[startIdx+1], data[startIdx+2]];
-      const fill = hexToRgba(fillColor);
-      if (isSimilarColor(targetColor, fill.slice(0,3), TOLERANCE)) return;
-      const queue = [[Math.floor(x), Math.floor(y)]];
-      const visited = new Uint8Array(width * height); // 0: no visitado, 1: pintado
-      // Flood fill en 8 direcciones para evitar dejar espacios en blanco
-      const directions = [
-        [1,0], [-1,0], [0,1], [0,-1], // 4 cardinales
-        [1,1], [1,-1], [-1,1], [-1,-1] // 4 diagonales
-      ];
-      while(queue.length) {
-        const [cx, cy] = queue.pop();
-        if (cx < 0 || cy < 0 || cx >= width || cy >= height) continue;
-        const idx = (cy * width + cx) * 4;
-        if (visited[cy * width + cx]) continue;
-        const currentColor = [data[idx], data[idx+1], data[idx+2]];
-        if (!isSimilarColor(currentColor, targetColor, TOLERANCE)) continue;
-        visited[cy * width + cx] = 1;
-        data[idx] = fill[0];
-        data[idx+1] = fill[1];
-        data[idx+2] = fill[2];
-        data[idx+3] = fill[3];
-        for (const [dx, dy] of directions) {
-          queue.push([cx+dx, cy+dy]);
-        }
-      }
-
-      // Post-procesado: iterar dos veces para cubrir halos dobles o bordes más anchos
-      for (let iter = 0; iter < 2; iter++) {
-        // Creamos una copia temporal para marcar los nuevos píxeles rellenados en esta pasada
-        const toFill = [];
-        for (let y = 0; y < height; y++) {
-          for (let x = 0; x < width; x++) {
-            if (visited[y * width + x]) {
-              for (const [dx, dy] of directions) {
-                const nx = x + dx;
-                const ny = y + dy;
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                  const nidx = (ny * width + nx) * 4;
-                  if (!visited[ny * width + nx]) {
-                    const r = data[nidx], g = data[nidx+1], b = data[nidx+2], a = data[nidx+3];
-                    if ((r > 230 && g > 230 && b > 230) || a < 255) {
-                      toFill.push([nx, ny]);
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        // Rellenar los píxeles marcados en esta pasada y marcarlos como visitados
-        for (const [nx, ny] of toFill) {
-          const nidx = (ny * width + nx) * 4;
-          data[nidx] = fill[0];
-          data[nidx+1] = fill[1];
-          data[nidx+2] = fill[2];
-          data[nidx+3] = fill[3];
-          visited[ny * width + nx] = 1;
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-    }
-    // --- Handler principal para el canvas ---
-    canvas.onpointerdown = e => {
-      if (tool === TOOL.FILL) return;
-      if (tool === TOOL.STAMP) {
-        const pos = getPointerPos(e);
-        ctx.save();
-        ctx.font = `${Math.max(48, lineWidth * 10)}px Segoe UI Emoji, Arial, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillText(currentStamp, pos.x, pos.y);
-        ctx.restore();
-        pushToHistory();
-        return;
-      }
-      if (tool === TOOL.TEXT && textToolText) {
-        drawingText = true;
-        drawTextAtEvent(e);
-        return;
-      }
-      drawing = true;
-      const pos = getPointerPos(e);
-      lastX = pos.x;
-      lastY = pos.y;
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      if (tool === TOOL.ERASER) {
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = lineWidth * 2.5;
-      } else {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = color;
-        ctx.lineWidth = tool === TOOL.FIBRA ? Math.max(lineWidth * 2, 6) : lineWidth;
-      }
-    };
-    let drawingText = false;
-    canvas.addEventListener('pointermove', function(e) {
-      if (tool === TOOL.TEXT && drawingText && textToolText) {
-        drawTextAtEvent(e);
-      }
-    });
-    canvas.addEventListener('pointerup', function(e) {
-      if (tool === TOOL.TEXT && drawingText) {
-        drawingText = false;
-        pushToHistory && pushToHistory();
-      }
-    });
-    canvas.addEventListener('click', function(e) {
-      // Si estamos en modo rellenar
-      if (tool === TOOL.FILL) {
-        const pos = getPointerPos(e);
-        floodFill(pos.x, pos.y, color);
-  
-        return;
-      }
-      // Otros modos: no hacer nada especial en click
-    });
-    function drawTextAtEvent(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-      ctx.save();
-      ctx.font = `${Math.max(16, lineWidth * 6)}px Segoe UI, Arial, sans-serif`;
-      ctx.fillStyle = color;
-      ctx.textBaseline = 'top';
-      ctx.fillText(textToolText, x, y);
-      ctx.restore();
-    }
-
-
-    // --- Responsive canvas ---
-    function resizeCanvas() {
-      const container = document.querySelector('.canvas-container');
-      const maxW = container.clientWidth;
-      const maxH = container.clientHeight;
-      let scale = Math.min(maxW / 1280, maxH / 720, 1);
-      canvas.style.width = (1280 * scale) + 'px';
-      canvas.style.height = (720 * scale) + 'px';
-    }
-    window.onresize = resizeCanvas;
-    window.onload = () => {
-      resizeCanvas();
-    };
-    // --- Solución robusta para input file ---
-    const uploadInput = document.getElementById('upload');
-    const uploadLabel = uploadInput.parentElement;
-    uploadLabel.addEventListener('click', () => {
-      uploadInput.value = "";
     });
 
-  }); // Fin DOMContentLoaded
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      const pos = getScaledMousePos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    });
 
-function scaleCanvasToFitScreen() {
-  const wrapper = document.querySelector('.responsive-wrapper');
-  const scaleX = window.innerWidth / 1280;
-  const scaleY = window.innerHeight / 720;
-  const scale = Math.min(scaleX, scaleY); // para mantener proporciones sin cortar
+    canvas.addEventListener('mouseup', () => {
+      isDrawing = false;
+    });
 
-  wrapper.style.transform = `scale(${scale})`;
-}
-window.addEventListener('resize', scaleCanvasToFitScreen);
-scaleCanvasToFitScreen(); // ejecutar al cargar
-</script>
+    canvas.addEventListener('mouseleave', () => {
+      isDrawing = false;
+    });
+  </script>
+
 </body>
 </html>
