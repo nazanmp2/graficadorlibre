@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Canvas Responsivo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Escalable</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       overflow: hidden;
-      background-color: #333;
+      background-color: #222;
+      height: 100%;
     }
 
-    .responsive-wrapper {
+    #container {
       position: absolute;
       top: 0;
       left: 0;
@@ -25,62 +25,61 @@
     canvas {
       display: block;
       background-color: white;
-      border: 2px solid #999;
+      border: 2px solid #888;
     }
   </style>
 </head>
 <body>
 
-  <div class="responsive-wrapper">
+  <div id="container">
     <canvas id="canvas" width="1280" height="720"></canvas>
   </div>
 
   <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const wrapper = document.querySelector('.responsive-wrapper');
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const container = document.getElementById("container");
 
+    let scale = 1;
     let isDrawing = false;
-    let scale = 1; // guardamos el valor actual de escala
 
-    function scaleCanvasToFitScreen() {
+    function scaleCanvasToFit() {
       const scaleX = window.innerWidth / 1280;
       const scaleY = window.innerHeight / 720;
       scale = Math.min(scaleX, scaleY);
-      wrapper.style.transform = `scale(${scale})`;
+      container.style.transform = `scale(${scale})`;
     }
 
-    window.addEventListener('resize', scaleCanvasToFitScreen);
-    scaleCanvasToFitScreen();
+    window.addEventListener("resize", scaleCanvasToFit);
+    scaleCanvasToFit();
 
-    // Ajustar coordenadas del mouse según el escalado
-    function getScaledMousePos(evt) {
+    function getMousePos(e) {
       const rect = canvas.getBoundingClientRect();
       return {
-        x: (evt.clientX - rect.left) / scale,
-        y: (evt.clientY - rect.top) / scale
+        x: (e.clientX - rect.left) / scale,
+        y: (e.clientY - rect.top) / scale
       };
     }
 
-    canvas.addEventListener('mousedown', (e) => {
+    canvas.addEventListener("mousedown", (e) => {
       isDrawing = true;
-      const pos = getScaledMousePos(e);
+      const pos = getMousePos(e);
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
     });
 
-    canvas.addEventListener('mousemove', (e) => {
+    canvas.addEventListener("mousemove", (e) => {
       if (!isDrawing) return;
-      const pos = getScaledMousePos(e);
+      const pos = getMousePos(e);
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
     });
 
-    canvas.addEventListener('mouseup', () => {
+    canvas.addEventListener("mouseup", () => {
       isDrawing = false;
     });
 
-    canvas.addEventListener('mouseleave', () => {
+    canvas.addEventListener("mouseleave", () => {
       isDrawing = false;
     });
   </script>
