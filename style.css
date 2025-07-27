@@ -114,4 +114,21 @@ body {
   .top-bar, .palette-bar {
     padding: 0 6px;
   }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.responsive-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  width: 1280px;
+  height: 720px;
+}
+
 }
