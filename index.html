@@ -90,9 +90,10 @@
     </div>
   </div>
 
-  <div class="canvas-container">
-    <canvas id="canvas" width="1280" height="720"></canvas>
-  </div>
+<div class="responsive-wrapper">
+  <canvas id="canvas" width="1280" height="720"></canvas>
+</div>
+
   <div class="palette-bar" id="palette" style="height:4cm; display:flex; align-items:center; flex-wrap:wrap; row-gap:10px; justify-content:center;">
     <!-- Colores generados por JS -->
   </div>
@@ -722,6 +723,17 @@ document.getElementById('text').onclick = () => selectTool(TOOL.TEXT);
     });
 
   }); // Fin DOMContentLoaded
+
+function scaleCanvasToFitScreen() {
+  const wrapper = document.querySelector('.responsive-wrapper');
+  const scaleX = window.innerWidth / 1280;
+  const scaleY = window.innerHeight / 720;
+  const scale = Math.min(scaleX, scaleY); // para mantener proporciones sin cortar
+
+  wrapper.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', scaleCanvasToFitScreen);
+scaleCanvasToFitScreen(); // ejecutar al cargar
 </script>
 </body>
 </html>
